@@ -1,0 +1,6 @@
+Flask
+Flask-SocketIO
+Flask-Cors
+paho-mqtt
+gunicorn
+python-dotenv

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard de Saúde do Motor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>Saúde do Motor</h1>
+        <p>ID do Motor: <span id="motor-id">--</span></p>
+        <p>Última Atualização: <span id="timestamp">--</span></p>
+    </header>
+
+    <div id="alert-container" class="alert-container"></div>
+
+    <main>
+        <div id="overall-status-card" class="status-card">
+            <h2>Status Geral</h2>
+            <div id="overall-status-container">
+                <div id="status-indicator-circle"></div>
+                <p id="overall-status">Aguardando dados...</p>
+            </div>
+        </div>
+
+        <div class="cards-container">
+            <div id="bearing-card" class="component-card">
+                <h3>Rolamento</h3>
+                <div>
+                    <p>Degradação (γ): <strong id="gamma-value">0%</strong></p>
+                    <div class="status-indicator">
+                        <span id="bearing-status" class="status-nodata">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="stator-card" class="component-card">
+                <h3>Enrolamento do Estator</h3>
+                <div>
+                    <p>Degradação (α): <strong id="alpha-value">0%</strong></p>
+                    <div class="status-indicator">
+                        <span id="stator-status" class="status-nodata">--</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="rotor-card" class="component-card">
+                <h3>Barras do Rotor</h3>
+                <div>
+                    <p>Barras Quebradas (Nb): <strong id="rotor-value">0</strong></p>
+                    <div class="status-indicator">
+                        <span id="rotor-status" class="status-nodata">--</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div class="charts-container">
+        <div class="chart-card">
+            <h3>Corrente (A)</h3>
+            <div class="chart-wrapper">
+                <canvas id="corrente-chart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3>Vibração (mm/s)</h3>
+            <div class="chart-wrapper">
+                <canvas id="vibracao-chart"></canvas>
+            </div>
+        </div>
+    </div>
+</main>
+
+<!-- Bibliotecas -->
+<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
