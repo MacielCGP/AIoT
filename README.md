@@ -2,38 +2,53 @@
 
 Este projeto monitora a saúde de um motor de indução em tempo real, apresentando os dados em um dashboard web interativo. A arquitetura foi refatorada para maior robustez, modularidade e realismo na simulação de dados.
 
-## Arquitetura
+## Funcionalidades
 
-O sistema é composto por três partes principais:
+-   **Monitoramento em Tempo Real:** Acompanhe o status e os dados do motor instantaneamente.
+-   **Dashboard Interativo:** Visualize gráficos de corrente e vibração, e indicadores de status para os componentes do motor.
+-   **Simulação Realista:** Dois cenários de simulação: operação normal e falha, para testar a robustez do sistema.
+-   **Arquitetura desacoplada:** Utiliza MQTT para comunicação entre o simulador e o backend, e WebSockets para comunicação entre o backend e o frontend.
 
-1.  **Simulador de Motor (`motor_simulator.py`):** Um script Python que gera dados realistas sobre a saúde e operação de um motor. Ele simula diferentes estados (Saudável, Atenção, Falha) e publica os dados em um broker MQTT em dois tópicos distintos.
-2.  **Backend (`backend/`):** Uma aplicação Flask que atua como um gateway. Ele se inscreve nos tópicos MQTT, processa os dados recebidos e os transmite em tempo real para o frontend via WebSockets.
-3.  **Frontend (`frontend/`):** Uma aplicação web de página única (SPA) construída com HTML, CSS e JavaScript. Ela se conecta ao backend via WebSocket, recebe os dados do motor e os exibe em um dashboard com gráficos e indicadores de status.
+## Tecnologias Utilizadas
+
+-   **Frontend:** HTML5, CSS3, JavaScript (com Chart.js para gráficos)
+-   **Backend:** Python, Flask, Flask-SocketIO, Paho-MQTT
+-   **Broker de Mensagens:** MQTT (recomenda-se Mosquitto)
+-   **Servidor de Produção:** Gunicorn, Eventlet
 
 ## Estrutura do Projeto
 
--   `motor_simulator.py`: Simulador  de dados do motor.
--   `backend/`: Contém a aplicação Flask.
-    -   `app.py`: O servidor principal (gateway MQTT para WebSocket).
-    -   `config.py`: Arquivo de configuração para o backend (portas, tópicos MQTT, etc.).
-    -   `requirements.txt`: Dependências Python do backend.
--   `frontend/`: Contém os arquivos do dashboard.
-    -   `index.html`: Estrutura da página.
-    -   `style.css`: Estilização do dashboard.
-    -   `script.js`: Lógica do cliente (WebSocket, atualização da UI, gráficos).
--   `sketch_oct28a/`: Contém um código de exemplo para um microcontrolador (ESP8266) que pode atuar como um sensor físico, publicando dados no mesmo formato do simulador.
+```
+.
+├── backend/
+│   ├── app.py                # Servidor principal (gateway MQTT para WebSocket)
+│   ├── config.py             # Configurações do backend
+│   ├── requirements.txt      # Dependências Python
+│   └── .env.example          # Exemplo de arquivo de ambiente
+├── frontend/
+│   ├── index.html            # Estrutura do dashboard
+│   ├── style.css             # Estilos do dashboard
+│   └── script.js             # Lógica do cliente (WebSocket, gráficos)
+├── simulators/
+│   ├── normal_operation_simulator.py # Simulador de operação normal
+│   └── failure_scenario_simulator.py # Simulador de cenário de falha
+├── sketch_oct28a/
+│   └── sketch_oct28a.ino     # Código de exemplo para microcontrolador (ESP8266)
+├── .gitignore
+└── README.md
+```
 
 ## Como Executar
 
 ### 1. Pré-requisitos
 
 -   Python 3.x
--   Um broker MQTT (como o Mosquitto) rodando em `localhost:1883`.
+-   Um broker MQTT (como o [Mosquitto](https://mosquitto.org/)) rodando em `localhost:1883`.
 -   Navegador web moderno.
 
-### 2. Configuração de Ambiente
+### 2. Configuração do Ambiente
 
-Antes de executar, é necessário configurar as variáveis de ambiente.
+Antes de executar, é necessário configurar as variáveis de ambiente para o backend.
 
 1.  Navegue até a pasta `backend`.
 2.  Copie o arquivo de exemplo `.env.example` para um novo arquivo chamado `.env`.
@@ -42,15 +57,17 @@ Antes de executar, é necessário configurar as variáveis de ambiente.
     ```
 3.  Revise o arquivo `.env` e ajuste as configurações (como o endereço do broker MQTT ou a porta do servidor), se necessário.
 
-### 3. Backend (Desenvolvimento)
+### 3. Backend
 
-Abra um terminal, navegue até a pasta `backend` e instale as dependências usando o arquivo de lock para garantir consistência:
+Abra um terminal, navegue até a pasta `backend` e instale as dependências:
 
 ```bash
-pip install -r requirements.lock.txt
+pip install -r requirements.txt
 ```
 
-Em seguida, inicie o servidor de desenvolvimento:
+**Para desenvolvimento:**
+
+Inicie o servidor de desenvolvimento:
 
 ```bash
 python app.py
@@ -58,28 +75,39 @@ python app.py
 
 O servidor estará rodando em `http://localhost:5000`.
 
-### 4. Backend (Produção)
+**Para produção:**
 
-Para um ambiente de produção, é recomendado usar um servidor WSGI robusto como o Gunicorn.
+É recomendado usar um servidor WSGI robusto como o Gunicorn.
 
-1.  Certifique-se de que as dependências estão instaladas com `pip install -r requirements.lock.txt`.
+1.  Instale o Gunicorn e o Eventlet:
+    ```bash
+    pip install gunicorn eventlet
+    ```
 2.  No arquivo `.env`, ajuste `FLASK_DEBUG=False`.
-3.  Inicie o servidor com Gunicorn, apontando para o objeto `app` dentro do seu arquivo `app.py`:
+3.  Inicie o servidor com Gunicorn:
     ```bash
     gunicorn --workers 3 --bind 0.0.0.0:5000 "app:app" --worker-class eventlet -w 1
     ```
 
-### 5. Simulador
+### 4. Simulador
 
-Abra um **novo terminal**, navegue até a pasta raiz do projeto e execute o simulador:
+Abra um **novo terminal** e execute um dos simuladores:
+
+**Operação Normal:**
 
 ```bash
 python simulators/normal_operation_simulator.py
 ```
 
+**Cenário de Falha:**
+
+```bash
+python simulators/failure_scenario_simulator.py
+```
+
 O simulador começará a publicar dados no broker MQTT, que serão recebidos pelo backend.
 
-### 6. Frontend
+### 5. Frontend
 
 Abra o arquivo `frontend/index.html` em seu navegador. O dashboard se conectará automaticamente ao backend e começará a exibir os dados em tempo real.
 
@@ -127,3 +155,17 @@ O simulador publica em dois tópicos para separar os dados de alta frequência d
         "vibracao": 0.3512
     }
     ```
+
+## Contribuição
+
+Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
+
+1.  Faça um *fork* do projeto.
+2.  Crie uma nova *branch* (`git checkout -b feature/nova-funcionalidade`).
+3.  Faça suas alterações e *commits* (`git commit -m 'Adiciona nova funcionalidade'`).
+4.  Envie para a sua *branch* (`git push origin feature/nova-funcionalidade`).
+5.  Abra um *Pull Request*.
+
+## Licença
+
+Este projeto está licenciado sob a Licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
