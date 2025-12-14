@@ -1,4 +1,4 @@
-# Projeto Dashboard de Saúde do Motor v2.0
+# Projeto Dashboard de Saúde do Motor 
 
 Este projeto monitora a saúde de um motor de indução em tempo real, apresentando os dados em um dashboard web interativo. A arquitetura foi refatorada para maior robustez, modularidade e realismo na simulação de dados.
 
@@ -74,20 +74,6 @@ python app.py
 ```
 
 O servidor estará rodando em `http://localhost:5000`.
-
-**Para produção:**
-
-É recomendado usar um servidor WSGI robusto como o Gunicorn.
-
-1.  Instale o Gunicorn e o Eventlet:
-    ```bash
-    pip install gunicorn eventlet
-    ```
-2.  No arquivo `.env`, ajuste `FLASK_DEBUG=False`.
-3.  Inicie o servidor com Gunicorn:
-    ```bash
-    gunicorn --workers 3 --bind 0.0.0.0:5000 "app:app" --worker-class eventlet -w 1
-    ```
 
 ### 4. Simulador
 
