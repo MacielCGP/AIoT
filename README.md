@@ -142,16 +142,3 @@ O simulador publica em dois tópicos para separar os dados de alta frequência d
     }
     ```
 
-## Contribuição
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
-
-1.  Faça um *fork* do projeto.
-2.  Crie uma nova *branch* (`git checkout -b feature/nova-funcionalidade`).
-3.  Faça suas alterações e *commits* (`git commit -m 'Adiciona nova funcionalidade'`).
-4.  Envie para a sua *branch* (`git push origin feature/nova-funcionalidade`).
-5.  Abra um *Pull Request*.
-
-## Licença
-
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo `LICENSE` para mais detalhes.
